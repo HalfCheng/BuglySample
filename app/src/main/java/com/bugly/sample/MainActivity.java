@@ -1,6 +1,7 @@
 package com.bugly.sample;
 
 import android.os.Bundle;
+import android.support.multidex.BuildConfig;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
