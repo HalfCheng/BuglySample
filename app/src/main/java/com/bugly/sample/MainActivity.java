@@ -2,6 +2,7 @@ package com.bugly.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,7 +11,7 @@ import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView test_tv;
+    private TextView test_tv, updata_info;
     private Button btn;
 
     @Override
@@ -18,28 +19,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         test_tv = findViewById(R.id.test_tv);
+        updata_info = findViewById(R.id.updata_info);
         btn = findViewById(R.id.btn);
-        btn.setText("当前版本号versionName为： " + BuildConfig.VERSION_NAME);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Beta.checkUpgrade();
-                //  test_tv.setText("Bug修复了");
+                test_tv.setText("Bug修复了");
             }
         });
-        loadUpgradeInfo();
 
+
+        loadUpgradeInfo();
     }
 
+
+    /**
+     * 版本更新信息
+     */
     private void loadUpgradeInfo() {
-        if (test_tv == null)
+        Log.w("TAG", "当前版本号versionName为： " + BuildConfig.VERSION_NAME);
+        // updata_info.setVisibility(View.GONE);
+        updata_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Beta.checkUpgrade();  //点击检查更新
+            }
+        });
+        if (updata_info == null)
             return;
 
         /***** 获取升级信息 *****/
         UpgradeInfo upgradeInfo = Beta.getUpgradeInfo();
 
         if (upgradeInfo == null) {
-            test_tv.setText("无升级信息");
+            updata_info.setText("无升级信息");
             return;
         }
 
@@ -57,6 +70,6 @@ public class MainActivity extends AppCompatActivity {
         info.append("弹窗次数: ").append(upgradeInfo.popTimes).append("\n");
         info.append("发布类型（0:测试 1:正式）: ").append(upgradeInfo.publishType).append("\n");
         info.append("弹窗类型（1:建议 2:强制 3:手工）: ").append(upgradeInfo.upgradeType);
-        test_tv.setText(info);
+        updata_info.setText(info);
     }
 }
