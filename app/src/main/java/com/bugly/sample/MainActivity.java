@@ -1,5 +1,8 @@
 package com.bugly.sample;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.multidex.BuildConfig;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +34,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        version.setText("当前版本versionName=： " + BuildConfig.VERSION_NAME);
+        version.setText("当前版本versionName=： " + getCurrentVersion(this));
+    }
+
+    /**
+     * 获取当前版本.
+     *
+     * @param context 上下文对象
+     * @return 返回当前版本
+     */
+    public String getCurrentVersion(Context context) {
+        try {
+            PackageInfo packageInfo =
+                    context.getPackageManager().getPackageInfo(this.getPackageName(),
+                            PackageManager.GET_CONFIGURATIONS);
+            int versionCode = packageInfo.versionCode;
+            String versionName = packageInfo.versionName;
+            return versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+
     }
 
 
