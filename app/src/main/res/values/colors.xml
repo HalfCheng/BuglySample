@@ -4,5 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="red">#dd2828</color>
+    <color name="gray">#dddddd</color>
+    <color name="orrange">#FFD700</color>
+
+
 
 </resources>

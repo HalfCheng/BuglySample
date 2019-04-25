@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, LoadBugClass.getBugString(), Toast.LENGTH_SHORT).show();
+                Beta.downloadPatch();
+              //  Toast.makeText(MainActivity.this, LoadBugClass.getBugString(), Toast.LENGTH_SHORT).show();
 
             }
         });

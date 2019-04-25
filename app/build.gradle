@@ -8,8 +8,8 @@ android {
         applicationId "com.bugly.sample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 107
-        versionName "1.7"
+        versionCode 108
+        versionName "1.8"
         multiDexEnabled true // dex突破65535的限制
         flavorDimensions "versionCode"
     }
