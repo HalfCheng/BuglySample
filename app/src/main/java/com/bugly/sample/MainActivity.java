@@ -7,30 +7,31 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView test_tv, updata_info;
+    private TextView test_tv, updata_info, version;
     private Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        version = findViewById(R.id.version);
         test_tv = findViewById(R.id.test_tv);
         updata_info = findViewById(R.id.updata_info);
         btn = findViewById(R.id.btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                test_tv.setText("Bug修复了");
+                Toast.makeText(MainActivity.this, LoadBugClass.getBugString(), Toast.LENGTH_SHORT).show();
+
             }
         });
-
-
-        loadUpgradeInfo();
+        version.setText("当前版本versionName=： " + BuildConfig.VERSION_NAME);
     }
 
 

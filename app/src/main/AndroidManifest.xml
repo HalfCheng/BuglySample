@@ -30,14 +30,18 @@
         <activity
             android:name=".UpgradeActivity"
             android:theme="@style/DialogActivityTheme" />
+
+        <!-- Bugly升级SDK配置开始  -->
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:theme="@android:style/Theme.Translucent" />
 
+
+        <!--API 24以上配置-->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.fileProvider"
+            android:authorities="com.tencent.bugly.hotfix.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -45,6 +49,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <!-- Bugly升级SDK配置结束-->
     </application>
 
 </manifest>

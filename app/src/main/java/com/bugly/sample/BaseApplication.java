@@ -2,16 +2,16 @@ package com.bugly.sample;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.widget.Toast;
 
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
-import com.tencent.bugly.beta.UpgradeInfo;
-import com.tencent.bugly.beta.upgrade.UpgradeListener;
-import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
+import com.tencent.bugly.beta.interfaces.BetaPatchListener;
+
+import java.util.Locale;
+
+import static com.tencent.bugly.beta.tinker.TinkerManager.getApplication;
 
 
 /**
@@ -37,120 +37,76 @@ public class BaseApplication extends Application {
         if (sInstance == null) {
             sInstance = this;
         }
-        initUpgradeDialog();
-        // initBugly();
-    }
-
-    //初始化BUgly 自定义升级弹框
-    private void initUpgradeDialog() {
-        /**
-         * 自定义初始化开关
-         */
-        Beta.autoInit = true;
-        /**
-         * true表示初始化时自动检查升级; false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
-         * 暂时关闭
-         */
-        Beta.autoCheckUpgrade = false;
-
-        /**
-         * 设置升级检查周期为60s(默认检查周期为0s)，60s内SDK不重复向后台请求策略);
-         */
-//        Beta.upgradeCheckPeriod = 60 * 1000;
-        /**
-         * 设置启动延时为1s（默认延时3s），APP启动1s后初始化SDK，避免影响APP启动速度;
-         */
-        Beta.initDelay = 1 * 1000;
-        /**
-         * 设置通知栏大图标，largeIconId为项目中的图片资源;
-         */
-        Beta.largeIconId = R.mipmap.ic_launcher;
-        /**
-         * 设置状态栏小图标，smallIconId为项目中的图片资源Id;
-         */
-        Beta.smallIconId = R.mipmap.ic_launcher;
-        /**
-         * 设置更新弹窗默认展示的banner，defaultBannerId为项目中的图片资源Id;
-         * 当后台配置的banner拉取失败时显示此banner，默认不设置则展示“loading“;
-         */
-        Beta.defaultBannerId = R.mipmap.ic_launcher;
-        /**
-         * 设置sd卡的Download为更新资源保存目录;
-         * 后续更新资源会保存在此目录，需要在manifest中添加WRITE_EXTERNAL_STORAGE权限;
-         */
-        Beta.storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        /**
-         * 已经确认过的弹窗在APP下次启动自动检查更新时会再次显示;
-         */
-        Beta.showInterruptedStrategy = true;
-        /**
-         * 只允许在MainActivity上显示更新弹窗，其他activity上不显示弹窗; 不设置会默认所有activity都可以显示弹窗;
-         */
-        Beta.canShowUpgradeActs.add(MainActivity.class);
-
-        /**
-         * 设置Wifi下自动下载
-         */
-        Beta.autoDownloadOnWifi = true;
-
-        /*在application中初始化时设置监听，监听策略的收取*/
-        Beta.upgradeListener = new UpgradeListener() {
+        // 设置是否开启热更新能力，默认为true
+        Beta.enableHotfix = true;
+        // 设置是否自动下载补丁，默认为true
+        Beta.canAutoDownloadPatch = true;
+        // 设置是否自动合成补丁，默认为true
+        Beta.canAutoPatch = true;
+        // 设置是否提示用户重启，默认为false
+        Beta.canNotifyUserRestart = true;
+        // 补丁回调接口
+        Beta.betaPatchListener = new BetaPatchListener() {
             @Override
-            public void onUpgrade(int ret, UpgradeInfo strategy, boolean isManual, boolean isSilence) {
-                if (strategy != null) {
-                    Intent i = new Intent();
-                    i.setClass(getApplicationContext(), UpgradeActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                } else {
-                    Toast.makeText(getApplicationContext(), "没有更新", Toast.LENGTH_SHORT).show();
-                }
+            public void onPatchReceived(String patchFile) {
+                Toast.makeText(getApplication(), "补丁下载地址" + patchFile, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownloadReceived(long savedLength, long totalLength) {
+                Toast.makeText(getApplication(),
+                        String.format(Locale.getDefault(), "%s %d%%",
+                                Beta.strNotificationDownloading,
+                                (int) (totalLength == 0 ? 0 : savedLength * 100 / totalLength)),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownloadSuccess(String msg) {
+                Toast.makeText(getApplication(), "补丁下载成功", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownloadFailure(String msg) {
+                Toast.makeText(getApplication(), "补丁下载失败", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onApplySuccess(String msg) {
+                Toast.makeText(getApplication(), "补丁应用成功", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onApplyFailure(String msg) {
+                Toast.makeText(getApplication(), "补丁应用失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPatchRollback() {
+
             }
         };
 
-        /* 设置更新状态回调接口 */
-        Beta.upgradeStateListener = new UpgradeStateListener() {
-            @Override
-            public void onUpgradeSuccess(boolean isManual) {
-                Toast.makeText(getApplicationContext(), "UPGRADE_SUCCESS", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onUpgradeFailed(boolean isManual) {
-                Toast.makeText(getApplicationContext(), "UPGRADE_FAILED", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onUpgrading(boolean isManual) {
-                Toast.makeText(getApplicationContext(), "UPGRADE_CHECKING", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onDownloadCompleted(boolean b) {
-                Toast.makeText(getApplicationContext(), "onDownloadCompleted", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onUpgradeNoVersion(boolean isManual) {
-                Toast.makeText(getApplicationContext(), "UPGRADE_NO_VERSION", Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        Bugly.init(getApplicationContext(), "c45d2fc4ba", true);
-    }
-
-    private void initBugly() {
-        //注意要设置在bugly init之前 自定义UI弹框
-        Beta.upgradeDialogLayoutId = R.layout.upgrade_dialog;
-        Bugly.init(getApplicationContext(), "c45d2fc4ba", true);
+        // 设置开发设备，默认为false，上传补丁如果下发范围指定为“开发设备”，需要调用此接口来标识开发设备
+        Bugly.setIsDevelopmentDevice(getApplication(), true);
+        // 多渠道需求塞入
+        // String channel = WalleChannelReader.getChannel(getApplication());
+        // Bugly.setAppChannel(getApplication(), channel);
+        // 这里实现SDK初始化，appId替换成你的在Bugly平台申请的appId
+        // 调试时，将第三个参数改为true
+        Bugly.init(this, "c45d2fc4ba", true);
 
     }
+
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+        // you must install multiDex whatever tinker is installed!
         MultiDex.install(base);
+        // 安装tinker
+        Beta.installTinker();
     }
 
 }

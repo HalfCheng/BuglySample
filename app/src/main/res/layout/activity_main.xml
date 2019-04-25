@@ -6,22 +6,39 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/red"
+        android:gravity="center"
+        android:text="Title"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="当前版本"
+        android:textSize="18sp" />
+
     <Button
         android:id="@+id/btn"
-        android:text="测试Crash"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="测试Crash" />
 
     <TextView
         android:id="@+id/test_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="" />
 
     <TextView
         android:id="@+id/updata_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="" />
 
 </LinearLayout>
