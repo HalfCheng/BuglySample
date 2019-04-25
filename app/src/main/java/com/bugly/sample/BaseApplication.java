@@ -38,7 +38,6 @@ public class BaseApplication extends Application {
             sInstance = this;
         }
         initUpgradeDialog();
-        // initBugly();
     }
 
     //初始化BUgly 自定义升级弹框
@@ -51,7 +50,7 @@ public class BaseApplication extends Application {
          * true表示初始化时自动检查升级; false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
          * 暂时关闭
          */
-        Beta.autoCheckUpgrade = false;
+        Beta.autoCheckUpgrade = true;
 
         /**
          * 设置升级检查周期为60s(默认检查周期为0s)，60s内SDK不重复向后台请求策略);
@@ -140,12 +139,8 @@ public class BaseApplication extends Application {
         Bugly.init(getApplicationContext(), "c45d2fc4ba", true);
     }
 
-    private void initBugly() {
-        //注意要设置在bugly init之前 自定义UI弹框
-        Beta.upgradeDialogLayoutId = R.layout.upgrade_dialog;
-        Bugly.init(getApplicationContext(), "c45d2fc4ba", true);
 
-    }
+
 
     @Override
     protected void attachBaseContext(Context base) {
