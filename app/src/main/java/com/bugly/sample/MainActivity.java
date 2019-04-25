@@ -25,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                test_tv.setText("Bug修复了");
+
+                //在这里默认异常抛出情况，人为抛出一个运行时异常
+                throw new RuntimeException("自定义异常：这是自己抛出的异常");
             }
         });
 
